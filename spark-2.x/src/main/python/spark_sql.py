@@ -6,7 +6,13 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 if __name__ == '__main__':
-    spark = SparkSession.builder.appName("spark sql").getOrCreate()
+    spark = SparkSession.builder\
+        .appName("spark sql")\
+        .config("spark.sql.broadcastTimeout", 20 * 60)\
+        .config("spark.sql.crossJoin.enabled", True)\
+        .config("odps.exec.dynamic.partition.mode", "nonstrict")\
+        .config("spark.sql.catalogImplementation", "odps")\
+        .getOrCreate()
 
     tableName = "mc_test_table"
     ptTableName = "mc_test_pt_table"
