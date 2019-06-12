@@ -21,13 +21,6 @@ package com.aliyun.odps.spark.examples.sparksql
 import org.apache.spark.sql.odps.OdpsContext
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  * SparkSQL
-  * Step 1. build aliyun-cupid-sdk
-  * Step 2. properly set spark.defaults.conf
-  * Step 3. bin/spark-submit --master yarn-cluster --class com.aliyun.odps.spark.examples.sparksql.SparkSQL \
-  * ${ProjectRoot}/spark/spark-1.x/spark-examples/target/spark-examples_2.10-version-shaded.jar
-  */
 object SparkSQL {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("sparkSQL")
@@ -36,187 +29,45 @@ object SparkSQL {
     import sqlContext._
 
     val project = sc.getConf.get("odps.project.name")
+    import sqlContext.implicits._
+    val tableName = "mc_test_table"
+    val ptTableName = "mc_test_pt_table"
+    // Drop Create
+    sql(s"DROP TABLE IF EXISTS ${tableName}")
+    sql(s"DROP TABLE IF EXISTS ${ptTableName}")
 
-    //init and test drop table
-    try {
-      sql("DROP TABLE IF EXISTS spark_sql_test_table")
-      sql("DROP TABLE IF EXISTS spark_sql_test_new_table")
-      sql("DROP TABLE IF EXISTS spark_sql_test_partition_table")
-      val df = sql("DROP TABLE IF EXISTS spark_sql_test_partition_table_copy")
-      df.show()
-      println("======= init success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= init failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
+    sql(s"CREATE TABLE ${tableName} (name STRING, num BIGINT)")
+    sql(s"CREATE TABLE ${ptTableName} (name STRING, num BIGINT) PARTITIONED BY (pt1 STRING, pt2 STRING)")
 
-    //test drop database : throw java.lang.UnsupportedOperationException
-    try {
-      sql("DROP DATABASE IF EXISTS " + project)
-      println("======= test drop database failed ======")
-      throw new RuntimeException
-    } catch {
-      case e: Throwable =>
-        println("======= test drop database success ======")
-    }
+    val df = sc.parallelize(0 to 99, 2).map(f => {
+      (s"name-$f", f)
+    }).toDF("name", "num")
 
-    //test create database: throw java.lang.UnsupportedOperationException
-    try {
-      sql("CREATE DATABASE IF NOT EXISTS " + project)
-      println("======= test create database failed ======")
-      throw new RuntimeException
-    } catch {
-      case ex: Throwable =>
-        println("======= test create database success ======")
-    }
+    val ptDf = sc.parallelize(0 to 99, 2).map(f => {
+      (s"name-$f", f, "2018", "0601")
+    }).toDF("name", "num", "pt1", "pt2")
 
-    //test create table and desc table
-    try {
-      sql("CREATE TABLE spark_sql_test_table(name STRING, num BIGINT)")
-      sql("CREATE TABLE spark_sql_test_partition_table(name STRING, num BIGINT) PARTITIONED BY (p1 STRING, p2 STRING)")
-      sql("DESCRIBE spark_sql_test_table")
-      sql("DESCRIBE spark_sql_test_partition_table")
-      println("======= test create table success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test create table failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
+    // 写 普通表
+    df.write.insertInto(tableName) // insertInto语义
+    df.write.mode("overwrite").insertInto(tableName) // insertOverwrite语义
 
-    //test insert into/overwrite
-    try {
-      sql("INSERT INTO TABLE spark_sql_test_table SELECT 'abc', 100000")
-      val data1 = sql("SELECT * FROM spark_sql_test_table").collect
-      assert(data1.length == 1)
-      assert(data1(0).get(0) == "abc")
-      assert(data1(0).get(1) == 100000)
+    // 写 分区表
+    // DataFrameWriter 无法指定分区写入 需要通过临时表再用SQL写入特定分区
+    df.registerTempTable(s"${ptTableName}_tmp_view")
+    sql(s"insert into table ${ptTableName} partition (pt1='2018', pt2='0601') select * from ${ptTableName}_tmp_view")
+    sql(s"insert overwrite table ${ptTableName} partition (pt1='2018', pt2='0601') select * from ${ptTableName}_tmp_view")
 
-      val count1 = sql("SELECT COUNT(*) FROM spark_sql_test_table").collect
-      assert(count1(0).get(0) == 1)
+    ptDf.write.insertInto(ptTableName) // 动态分区 insertInto语义
+    ptDf.write.mode("overwrite").insertInto(ptTableName) // 动态分区 insertOverwrite语义
 
-      sql("INSERT OVERWRITE TABLE spark_sql_test_table SELECT 'abcd', 200000")
-      val data2 = sql("SELECT * FROM spark_sql_test_table").collect
-      assert(data2.length == 1)
-      assert(data2(0).get(0) == "abcd")
-      assert(data2(0).get(1) == 200000)
+    // 读 普通表
+    val rdf = sql(s"select name, num from $tableName")
+    println(s"rdf count, ${rdf.count()}")
+    rdf.printSchema()
 
-      val count2 = sql("SELECT COUNT(*) FROM spark_sql_test_table").collect
-      assert(count2(0).get(0) == 1)
-
-      sql("INSERT INTO TABLE spark_sql_test_table SELECT 'aaaa', 140000")
-      sql("INSERT INTO TABLE spark_sql_test_table SELECT 'bbbb', 160000")
-      val data3 = sql("SELECT * FROM spark_sql_test_table order by num").collect
-      assert(data3.length == 3)
-      assert(data3(0).get(0) == "aaaa")
-      assert(data3(0).get(1) == 140000)
-      assert(data3(1).get(0) == "bbbb")
-      assert(data3(1).get(1) == 160000)
-      assert(data3(2).get(0) == "abcd")
-      assert(data3(2).get(1) == 200000)
-
-      println("======= test insert into and insert overwrite success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test insert into and insert overwrite failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
-
-    //test show columns
-    try {
-      val tables = sql("SHOW TABLES").collect()
-      tables foreach println
-      assert(tables.size > 0)
-      println("======= test show tables success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test show tables failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
-
-    //test insert into/overwrite partition
-    try {
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='hangzhou') SELECT 'hz', 100")
-      sql("INSERT OVERWRITE TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='hangzhou') SELECT 'hz', 160")
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='shanghai') SELECT 'sh', 200")
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='shanghai') SELECT 'sh', 300")
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='hangzhou') SELECT 'hz', 400")
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='shanghai') SELECT 'sh', 500")
-      sql("INSERT INTO TABLE spark_sql_test_partition_table PARTITION (p1='2017',p2='hangzhou') SELECT 'hz', 600")
-      val data = sql("SELECT * FROM spark_sql_test_partition_table order by num").collect()
-      assert(data.length == 6)
-      assert(data(0).get(0) == "hz")
-      assert(data(0).get(1) == 160)
-      assert(data(0).get(2) == "2017")
-      assert(data(0).get(3) == "hangzhou")
-      assert(data(3).get(0) == "hz")
-      assert(data(3).get(1) == 400)
-      assert(data(3).get(2) == "2017")
-      assert(data(3).get(3) == "hangzhou")
-      println("======= test insert into/overwrite partition success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test insert into/overwrite partition failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
-
-    //test create table as select
-    try {
-      sql("CREATE TABLE spark_sql_test_partition_table_copy AS SELECT * FROM spark_sql_test_partition_table")
-      val data = sql("SELECT * FROM spark_sql_test_partition_table_copy order by num").collect()
-      assert(data.length == 6)
-      assert(data(0).get(0) == "hz")
-      assert(data(0).get(1) == 160)
-      assert(data(0).get(2) == "2017")
-      assert(data(0).get(3) == "hangzhou")
-      assert(data(3).get(0) == "hz")
-      assert(data(3).get(1) == 400)
-      assert(data(3).get(2) == "2017")
-      assert(data(3).get(3) == "hangzhou")
-      println("======= test create table as select success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test create table as select failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
-
-    //test register udf
-    try {
-      udf.register("myUpper", (input: String) => input.toUpperCase)
-      val funcs = sql("SHOW FUNCTIONS myupper").collect()
-      funcs foreach println
-      assert(funcs.length == 1)
-      val data = sql("SELECT myupper(name) FROM spark_sql_test_partition_table WHERE name = 'hz'").collect()
-      assert(data(0).get(0) == "HZ")
-      println("======= test register udf success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test register udf failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
-
-    //test drop table
-    try {
-      sql("create table if not exists spark_sql_test_new_table(id string)")
-      val tbls1 = sql("show tables").collect
-      tbls1 foreach println
-      assert(tbls1.exists(x => x.toString().contains("spark_sql_test_new_table")))
-      sql("DROP TABLE spark_sql_test_new_table")
-      val tbls2 = sql("show tables").collect
-      assert(!tbls2.exists(x => x.toString().contains("spark_sql_test_new_table")))
-      println("======= test drop table success ======")
-    } catch {
-      case e: Throwable =>
-        println("======= test drop table failed ======")
-        e.printStackTrace(System.out)
-        throw e
-    }
+    // 读 分区表
+    val rptdf = sql(s"select name, num, pt1, pt2 from $ptTableName where pt1 = '2018' and pt2 = '0601'")
+    println(s"rptdf count, ${rptdf.count()}")
+    rptdf.printSchema()
   }
 }
