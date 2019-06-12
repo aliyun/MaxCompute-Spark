@@ -22,7 +22,6 @@ import org.apache.spark.mllib.clustering.KMeans._
 import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.{SparkConf, SparkContext}
 
 object KmeansModelSaveToOss {
   val modelOssDir = "oss://bucket/kmeans-model"

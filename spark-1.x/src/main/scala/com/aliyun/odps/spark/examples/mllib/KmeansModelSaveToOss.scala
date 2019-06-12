@@ -23,13 +23,6 @@ import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  * KmeansModelSaveToOss
-  * Step 1. build aliyun-cupid-sdk
-  * Step 2. properly set spark.defaults.conf
-  * Step 3. bin/spark-submit --master yarn-cluster --class com.aliyun.odps.spark.examples.mllib.KmeansModelSaveToOss \
-  * ${ProjectRoot}/spark/spark-1.x/spark-examples/target/spark-examples_2.10-version-shaded.jar
-  */
 object KmeansModelSaveToOss {
   val modelOssDir = "oss://bucket/kmeans-model"
 

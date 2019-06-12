@@ -22,13 +22,6 @@ import org.apache.spark.graphx.{Edge, Graph, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  * PageRank
-  * Step 1. build aliyun-cupid-sdk
-  * Step 2. properly set spark.defaults.conf
-  * Step 3. bin/spark-submit --master yarn-cluster --class com.aliyun.odps.spark.examples.graphx.PageRank \
-  * ${ProjectRoot}/spark/spark-1.x/spark-examples/target/spark-examples_2.10-version-shaded.jar
-  */
 object PageRank {
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("PageRank")

@@ -21,20 +21,8 @@ package com.aliyun.odps.spark.examples
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 
-/**
-  * WordCount
-  * Step 1. build aliyun-cupid-sdk
-  * Step 2. properly set spark.defaults.conf
-  * Step 3. bin/spark-submit --master yarn-cluster --class com.aliyun.odps.spark.examples.WordCount \
-  * ${ProjectRoot}/spark/spark-1.x/spark-examples/target/spark-examples_2.10-version-shaded.jar
-  */
 object WordCount {
   def main(args: Array[String]) {
-
-    // for local mode
-    // val conf = new SparkConf().setMaster("local[4]").setAppName("WordCount")
-
-    // for cluster mode
     val conf = new SparkConf().setAppName("WordCount")
     val sc = new SparkContext(conf)
     try {
