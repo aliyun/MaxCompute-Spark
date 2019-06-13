@@ -18,11 +18,16 @@ object DataHubStreamingDemo {
     val spark = SparkSession
       .builder()
       .appName("DataHubStreamingDemo")
-      .master("local[4]")
+      .config("spark.hadoop.fs.oss.credentials.provider", "org.apache.hadoop.fs.aliyun.oss.AliyunStsTokenCredentialsProvider")
+      .config("spark.hadoop.fs.oss.ststoken.roleArn", "acs:ram::****:role/aliyunodpsdefaultrole")
+      .config("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-zmf.aliyuncs.com")
       .getOrCreate()
 
     // 设置Batch间隔时间
     val ssc = new StreamingContext(spark.sparkContext, Seconds(5))
+
+    // checkpoint dir to oss
+    ssc.checkpoint("oss://bucket/inputdata/")
 
     val dataStream = DatahubUtils.createStream(
       ssc,
