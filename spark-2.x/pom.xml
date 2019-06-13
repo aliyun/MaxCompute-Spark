@@ -84,6 +84,20 @@
             <artifactId>scala-actors</artifactId>
             <version>${scala.version}</version>
         </dependency>
+
+        <!-- datahub streaming依赖 -->
+        <dependency>
+            <groupId>com.aliyun.emr</groupId>
+            <artifactId>emr-datahub_${scala.binary.version}</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.datahub</groupId>
+            <artifactId>aliyun-sdk-datahub</artifactId>
+            <version>2.9.5</version>
+        </dependency>
+        <!-- datahub streaming依赖 -->
     </dependencies>
 
     <build>

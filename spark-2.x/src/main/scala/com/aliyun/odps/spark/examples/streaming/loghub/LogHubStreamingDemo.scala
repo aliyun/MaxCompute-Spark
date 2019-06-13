@@ -16,7 +16,7 @@
   * limitations under the License.
   */
 
-package com.aliyun.odps.spark.examples.streaming
+package com.aliyun.odps.spark.examples.streaming.loghub
 
 import com.aliyun.openservices.loghub.client.config.LogHubCursorPosition
 import org.apache.spark.storage.StorageLevel
