@@ -37,7 +37,7 @@ object ZeppelinServer {
   private val LOG = Logger.getLogger(ZeppelinServer.getClass)
   // zeppelin package location
   val zeppelinHome = s"${new File(".").getCanonicalPath}/" +
-    s"zeppelin-0.8.1-bin-netinst.tar.gz/" +
+    s"public.zeppelin-0.8.1-bin-netinst.tar.gz/" +
     s"zeppelin-0.8.1-bin-netinst/"
 
   def getRandomPort(): Int = {
