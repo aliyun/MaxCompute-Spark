@@ -20,12 +20,15 @@ package com.aliyun.odps.spark.examples.zeppelin
 
 import java.io.{File, PrintWriter}
 import java.net.{Inet4Address, InetAddress, NetworkInterface, ServerSocket}
+import java.util.concurrent.{ScheduledExecutorService, ScheduledThreadPoolExecutor, TimeUnit}
 
 import com.aliyun.odps.cupid.CupidSession
 import com.aliyun.odps.cupid.requestcupid.CupidProxyTokenUtil
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.util.ThreadUtils
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer
 
 import scala.sys.process.Process
@@ -34,11 +37,22 @@ import scala.io.Source
 
 object ZeppelinServer {
 
+  def newDaemonSingleThreadScheduledExecutor(threadName: String): ScheduledExecutorService = {
+    val threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat(threadName).build()
+    val executor = new ScheduledThreadPoolExecutor(1, threadFactory)
+    // By default, a cancelled task is not automatically removed from the work queue until its delay
+    // elapses. We have to enable it manually.
+    executor.setRemoveOnCancelPolicy(true)
+    executor
+  }
+
   private val LOG = Logger.getLogger(ZeppelinServer.getClass)
   // zeppelin package location
   val zeppelinHome = s"${new File(".").getCanonicalPath}/" +
     s"public.zeppelin-0.8.1-bin-netinst.tar.gz/" +
     s"zeppelin-0.8.1-bin-netinst/"
+  val fixedReplOutputDir = "/home/admin/replClassOutputDir"
+  val pool = newDaemonSingleThreadScheduledExecutor("link4replClassOutputDir")
 
   def getRandomPort(): Int = {
     val socket = new ServerSocket(0)
@@ -46,6 +60,7 @@ object ZeppelinServer {
     socket.close()
     port
   }
+
 
   /**
     * COPY from spark source code.
@@ -115,8 +130,34 @@ object ZeppelinServer {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder()
+      .config("spark.repl.class.outputDir", fixedReplOutputDir)
       .appName("ZeppelinServer")
       .getOrCreate()
+
+    pool.scheduleWithFixedDelay(
+      new Runnable {
+        override def run(): Unit = {
+          val linkDir = new File(fixedReplOutputDir)
+          if (linkDir.exists()) {
+            return
+          } else {
+            val tmpDir = new File(System.getProperty("java.io.tmpdir"))
+            val dirs = tmpDir.list()
+            for (dir <- dirs) {
+              if (dir.startsWith("spark") && dir.length == 42) {
+                // like this spark-fdf1027a-a006-476c-9abb-c32b9fd784d7
+                val cmd = s"ln -s ${tmpDir.getCanonicalPath}/${dir} ${fixedReplOutputDir}"
+                LOG.info(s"find repl dir and do link with cmd ${cmd}")
+                Process(cmd).!
+              }
+            }
+          }
+        }
+      },
+      0,
+      1,
+      TimeUnit.SECONDS
+    )
 
     val interpreterServerPort = getRandomPort
     val zeppelinPort = getRandomPort
