@@ -18,7 +18,7 @@
 
 package com.aliyun.odps.spark.examples.zeppelin
 
-import java.io.{File, PrintWriter}
+import java.io.{File, FilenameFilter, PrintWriter}
 import java.net.{Inet4Address, InetAddress, NetworkInterface, ServerSocket}
 import java.util.concurrent.{ScheduledExecutorService, ScheduledThreadPoolExecutor, TimeUnit}
 
@@ -144,11 +144,25 @@ object ZeppelinServer {
             val tmpDir = new File(System.getProperty("java.io.tmpdir"))
             val dirs = tmpDir.list()
             for (dir <- dirs) {
-              if (dir.startsWith("spark") && dir.length == 42) {
-                // like this spark-fdf1027a-a006-476c-9abb-c32b9fd784d7
-                val cmd = s"ln -s ${tmpDir.getCanonicalPath}/${dir} ${fixedReplOutputDir}"
-                LOG.info(s"find repl dir and do link with cmd ${cmd}")
-                Process(cmd).!
+              if (dir.startsWith("spark")) {
+                // old interp like this spark-fdf1027a-a006-476c-9abb-c32b9fd784d7
+                // new interp like this spark8819436304609717444
+                val tmpDir2 = new File(s"${tmpDir.getAbsolutePath}/${dir}/")
+                val lineCount = tmpDir2.list(new FilenameFilter {
+                  override def accept(dir: File, name: String): Boolean = {
+                    if (name.startsWith("$line")) {
+                      true
+                    } else {
+                      false
+                    }
+                  }
+                }).length
+
+                if (lineCount > 0) {
+                  val cmd = s"ln -s ${tmpDir.getCanonicalPath}/${dir} ${fixedReplOutputDir}"
+                  LOG.info(s"find repl dir and do link with cmd ${cmd}")
+                  Process(cmd).!
+                }
               }
             }
           }
