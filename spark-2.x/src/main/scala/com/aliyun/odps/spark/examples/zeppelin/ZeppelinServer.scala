@@ -28,12 +28,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.util.ThreadUtils
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer
 
-import scala.sys.process.Process
 import scala.collection.JavaConverters._
 import scala.io.Source
+import scala.sys.process.Process
 
 object ZeppelinServer {
 
