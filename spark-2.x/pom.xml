@@ -19,7 +19,7 @@
 
     <properties>
         <spark.version>2.3.0</spark.version>
-        <cupid.sdk.version>3.3.3-public</cupid.sdk.version>
+        <cupid.sdk.version>3.3.8-public</cupid.sdk.version>
         <scala.version>2.11.8</scala.version>
         <scala.binary.version>2.11</scala.binary.version>
     </properties>
@@ -103,7 +103,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- datahub streaming依赖 -->
+
+        <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>streaming-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
