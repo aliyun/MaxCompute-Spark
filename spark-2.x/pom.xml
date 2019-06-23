@@ -103,7 +103,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- datahub streaming依赖 -->
+
+        <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>streaming-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
