@@ -19,7 +19,7 @@
 
     <properties>
         <spark.version>1.6.3</spark.version>
-        <cupid.sdk.version>3.3.3-public</cupid.sdk.version>
+        <cupid.sdk.version>3.3.8-public</cupid.sdk.version>
         <scala.version>2.10.4</scala.version>
         <scala.binary.version>2.10</scala.binary.version>
     </properties>
