@@ -129,6 +129,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>streaming-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.zeppelin</groupId>
             <artifactId>spark-interpreter</artifactId>
             <version>0.8.1</version>
@@ -172,6 +178,10 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>reference.conf</resource>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.spark.sql.sources.DataSourceRegister</resource>
                                 </transformer>
                             </transformers>
                         </configuration>
