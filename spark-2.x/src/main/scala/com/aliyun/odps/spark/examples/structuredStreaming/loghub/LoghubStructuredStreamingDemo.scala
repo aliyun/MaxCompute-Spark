@@ -14,7 +14,7 @@ object LoghubStructuredStreamingDemo {
     val df = spark
       .readStream
       .format("loghub")
-      .option("Loghub.Endpoint", "zkytest.cn-beijing.log.aliyuncs.com")
+      .option("Loghub.Endpoint", "cn-beijing-intranet.log.aliyuncs.com")
       .option("Loghub.Project", "zkytest")
       .option("Loghub.AccessId", "******")
       .option("Loghub.AccessKey", "******")

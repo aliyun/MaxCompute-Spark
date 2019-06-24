@@ -14,7 +14,7 @@ object DatahubStructuredStreamingDemo {
     val df = spark
       .readStream
       .format("datahub")
-      .option("datahub.endpoint", "https://dh-cn-beijing.aliyuncs.com")
+      .option("datahub.endpoint", "http://dh-cn-beijing.aliyun-inc.com")
       .option("datahub.project", "zkytest")
       .option("datahub.topic", "zkytest")
       .option("datahub.AccessId", "******")
