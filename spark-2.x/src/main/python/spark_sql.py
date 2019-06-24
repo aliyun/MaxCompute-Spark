@@ -2,8 +2,13 @@
 import sys
 from pyspark.sql import SparkSession
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+try:
+    # for python 2
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+except:
+    # python 3 not needed
+    pass
 
 if __name__ == '__main__':
     spark = SparkSession.builder\
