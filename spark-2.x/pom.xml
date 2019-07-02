@@ -137,6 +137,10 @@
                     <groupId>net.jpountz.lz4</groupId>
                     <artifactId>lz4</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-native_${scala.binary.version}</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
