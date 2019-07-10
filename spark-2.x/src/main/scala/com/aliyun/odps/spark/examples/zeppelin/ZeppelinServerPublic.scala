@@ -195,7 +195,9 @@ object ZeppelinServerPublic {
     // out.close()
 
     // generate external url for end user
-    val commonProxy = spark.sparkContext.getConf.get("spark.hadoop.odps.cupid.proxy.end.point")
+    val commonProxy = spark.sparkContext.getConf
+      .get("spark.hadoop.odps.cupid.common.proxy",
+      "open.maxcompute.aliyun.com")
     val externalUrl = s"http://${System.getenv("META_LOOKUP_NAME")}-zeppelin.${commonProxy}"
     println(s"Please visit the following url for zeppelin interaction.\n${externalUrl}")
 
