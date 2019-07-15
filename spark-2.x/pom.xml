@@ -85,6 +85,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>odps-spark-client_2.11</artifactId>
+            <version>0.0.1-DEV-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/odps-spark-client_2.11-0.0.1-DEV-SNAPSHOT-jar-with-dependencies.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
