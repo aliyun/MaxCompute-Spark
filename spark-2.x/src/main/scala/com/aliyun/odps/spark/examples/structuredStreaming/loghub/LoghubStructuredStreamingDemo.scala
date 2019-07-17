@@ -19,7 +19,7 @@ object LoghubStructuredStreamingDemo {
       .option("Loghub.AccessId", "******")
       .option("Loghub.AccessKey", "******")
       .option("Loghub.Logstores", "zkytest")
-      .option("StartingOffsets", "earliest")
+      .option("StartingOffsets", "latest")
       .load()
 
     /** *
