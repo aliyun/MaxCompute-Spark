@@ -32,8 +32,8 @@ object Kafka2OdpsDemo {
     val sparkConf = new SparkConf().setAppName("test")
     val ssc = new StreamingContext(sparkConf, Seconds(10))
 
-    // 请使用OSS作为Checkpoint存储
-    ssc.checkpoint("./tmp/checkpoint")
+    // 请使用OSS作为Checkpoint存储,修改为有效OSS路径。OSS访问文档请参考 https://github.com/aliyun/MaxCompute-Spark/wiki/08.-Oss-Access%E6%96%87%E6%A1%A3%E8%AF%B4%E6%98%8E
+    ssc.checkpoint("oss://bucket/checkpointdir")
 
     // kafka配置参数
     val kafkaParams = Map[String, Object](
@@ -45,6 +45,7 @@ object Kafka2OdpsDemo {
       "enable.auto.commit" -> (false: java.lang.Boolean)
     )
 
+    // 创建kafka dstream
     val topics = Set("test")
     val recordDstream: InputDStream[ConsumerRecord[String, String]] =
       KafkaUtils.createDirectStream[String, String](
@@ -52,8 +53,8 @@ object Kafka2OdpsDemo {
         LocationStrategies.PreferConsistent,
         ConsumerStrategies.Subscribe[String, String](topics, kafkaParams)
       )
-
     val dstream = recordDstream.map(f => (f.key(), f.value()))
+    // 解析kafka数据并写入odps
     val data: DStream[String] = dstream.map(_._2)
     val wordsDStream: DStream[String] = data.flatMap(_.split(" "))
     wordsDStream.foreachRDD(rdd => {
