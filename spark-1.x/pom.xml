@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.aliyun.odps</groupId>
             <artifactId>odps-spark-datasource_${scala.binary.version}</artifactId>
-            <version>${cupid.sdk.version}</version>
+            <version>3.3.8-public-hotfix1</version>
         </dependency>
 
         <dependency>

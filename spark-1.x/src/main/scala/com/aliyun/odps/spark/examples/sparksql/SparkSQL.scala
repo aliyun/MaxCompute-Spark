@@ -1,20 +1,20 @@
 /**
-  * Licensed to the Apache Software Foundation (ASF) under one
-  * or more contributor license agreements.  See the NOTICE file
-  * distributed with this work for additional information
-  * regarding copyright ownership.  The ASF licenses this file
-  * to you under the Apache License, Version 2.0 (the
-  * "License"); you may not use this file except in compliance
-  * with the License.  You may obtain a copy of the License at
-  * <p>
-  * http://www.apache.org/licenses/LICENSE-2.0
-  * <p>
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.aliyun.odps.spark.examples.sparksql
 
@@ -57,8 +57,8 @@ object SparkSQL {
     sql(s"insert into table ${ptTableName} partition (pt1='2018', pt2='0601') select * from ${ptTableName}_tmp_view")
     sql(s"insert overwrite table ${ptTableName} partition (pt1='2018', pt2='0601') select * from ${ptTableName}_tmp_view")
 
-    ptDf.write.insertInto(ptTableName) // 动态分区 insertInto语义
-    ptDf.write.mode("overwrite").insertInto(ptTableName) // 动态分区 insertOverwrite语义
+    ptDf.write.partitionBy("pt1", "pt2").insertInto(ptTableName) // 动态分区 insertInto语义
+    ptDf.write.partitionBy("pt1", "pt2").mode("overwrite").insertInto(ptTableName) // 动态分区 insertOverwrite语义
 
     // 读 普通表
     val rdf = sql(s"select name, num from $tableName")
