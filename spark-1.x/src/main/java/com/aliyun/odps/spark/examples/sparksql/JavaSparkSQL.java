@@ -18,6 +18,8 @@
 
 package com.aliyun.odps.spark.examples.sparksql;
 
+import com.aliyun.odps.Odps;
+import com.aliyun.odps.cupid.CupidSession;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.JavaRDD;
@@ -118,5 +120,10 @@ public class JavaSparkSQL {
     DataFrame rptdf = odpsContext.sql("select name, num, pt1, pt2 from " + ptTableName + " where pt1 = '2018' and pt2 = '0601'");
     System.out.println("rptdf count: "+ rptdf.count());
     rptdf.printSchema();
+
+
+    Odps odps = CupidSession.get().odps();
+    System.out.println(odps.tables().get(ptTableName).getPartitions().size());
+    System.out.println(odps.tables().get(ptTableName).getPartitions().get(0).getPartitionSpec());
   }
 }
