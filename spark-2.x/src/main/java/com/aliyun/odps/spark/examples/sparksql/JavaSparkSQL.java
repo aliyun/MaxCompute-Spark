@@ -43,12 +43,10 @@ public class JavaSparkSQL {
                 .config("spark.sql.broadcastTimeout", 20 * 60)
                 .config("spark.sql.crossJoin.enabled", true)
                 .config("odps.exec.dynamic.partition.mode", "nonstrict")
-                .config("spark.sql.catalogImplementation", "odps")
                 .getOrCreate();
         JavaSparkContext sparkContext = new JavaSparkContext(spark.sparkContext());
 
 
-        String project = sparkContext.getConf().get("odps.project.name");
         String tableName = "mc_test_table";
         String tableNameCopy = "mc_test_table_copy";
         String ptTableName = "mc_test_pt_table";

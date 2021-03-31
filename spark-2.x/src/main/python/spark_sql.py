@@ -16,7 +16,6 @@ if __name__ == '__main__':
         .config("spark.sql.broadcastTimeout", 20 * 60)\
         .config("spark.sql.crossJoin.enabled", True)\
         .config("odps.exec.dynamic.partition.mode", "nonstrict")\
-        .config("spark.sql.catalogImplementation", "odps")\
         .getOrCreate()
 
     tableName = "mc_test_table"
