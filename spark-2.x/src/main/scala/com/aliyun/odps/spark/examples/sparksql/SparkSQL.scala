@@ -30,7 +30,7 @@ object SparkSQL {
       .config("odps.exec.dynamic.partition.mode", "nonstrict")
       .getOrCreate()
 
-    val project = spark.conf.get("odps.project.name")
+    // val project = spark.conf.get("odps.project.name")
 
     import spark._
     import sqlContext.implicits._
