@@ -172,6 +172,14 @@
             <version>2.12.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>jindofs</groupId>
+            <artifactId>sdk</artifactId>
+            <version>3.7.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jindofs-sdk-3.7.2.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
