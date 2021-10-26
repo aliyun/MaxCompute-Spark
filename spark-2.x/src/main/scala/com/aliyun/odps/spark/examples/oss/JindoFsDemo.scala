@@ -27,6 +27,7 @@ object JindoFsDemo {
     val bucket : String = args(2)
     val ossPath : String = args(3)
 
+    // using ram-role assume
     val conf = new SparkConf()
       .setAppName("jindo-fs-demo")
       .set("spark.hadoop.fs.AbstractFileSystem.oss.impl", "com.aliyun.emr.fs.oss.OSS")
@@ -34,6 +35,16 @@ object JindoFsDemo {
       .set("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-internal.aliyuncs.com")
       .set("spark.hadoop.fs.jfs.cache.oss.credentials.provider", "com.aliyun.emr.fs.auth.CustomCredentialsProvider")
       .set("spark.hadoop.aliyun.oss.provider.url", s"http://localhost:10011/sts-token-info?user_id=${aliyunUid}&role=${role}")
+
+
+    //using access-key-id/access-key-secret
+//    val conf = new SparkConf()
+//      .setAppName("jindo-fs-demo")
+//      .set("spark.hadoop.fs.AbstractFileSystem.oss.impl", "com.aliyun.emr.fs.oss.OSS")
+//      .set("spark.hadoop.fs.oss.impl", "com.aliyun.emr.fs.oss.JindoOssFileSystem")
+//      .set("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-internal.aliyuncs.com")
+//      .set("spark.hadoop.fs.oss.accessKeyId", "xxx")
+//      .set("spark.hadoop.fs.oss.accessKeySecret", "xxx")
 
     val sc = new SparkContext(conf)
 
@@ -46,12 +57,6 @@ object JindoFsDemo {
 
   /**
     * compute cost time using jindo sdk
-    * compute cost time using oss sdk
-    *
-    * then returns these two value
-    *
-    * @param sc
-    * @param ossPath
     */
   def read_oss_dir(sc: SparkContext, job_des:String, ossPath: String): Unit = {
     val startTime: Long = System.currentTimeMillis()
