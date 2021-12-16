@@ -22,7 +22,7 @@ public class CupidApplicationMetaExample {
 
         /*
          * list application metas
-         * yarnApplicationStates: https://jahadoop.apache.org/docs/r2.7.3/api/org/apache/hadoop/yarn/api/records/YarnApplicationState.html
+         * yarnApplicationStates: https://hadoop.apache.org/docs/r2.7.3/api/org/apache/hadoop/yarn/api/records/YarnApplicationState.html
          * 注意：list开销较大，调用频率不建议太高
          */
         CupidTaskParamProtos.ApplicationMetaList applicationMetaList = ApplicationMetaUtil.listApplicationMeta(
