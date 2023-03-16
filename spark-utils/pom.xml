@@ -67,6 +67,30 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/cupid-sdk-3.3.14.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-launcher_2.11</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+            <version>3.3.12</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/hadoop-yarn-client-3.3.12.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
