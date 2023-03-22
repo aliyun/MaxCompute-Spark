@@ -28,9 +28,13 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.types.*;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.function.PairFunction;
 
+import scala.Tuple2;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import org.apache.spark.sql.types.StructField;
 
@@ -100,6 +104,17 @@ public class JavaSparkSQL {
         System.out.println("rdf count: " + rdf.count());
         rdf.printSchema();
 
+        JavaPairRDD<Long, JavaSparkSQL.TestData> testRdd = rdf.toJavaRDD()
+                .mapToPair(new PairFunction<Row, Long, JavaSparkSQL.TestData>() {
+            public Tuple2<Long, JavaSparkSQL.TestData> call(Row row) throws Exception {
+                JavaSparkSQL.TestData data = new JavaSparkSQL.TestData();
+                data.setName((String)row.get(0));
+                data.setNum((Long)row.get(1));
+                return new Tuple2(row.get(1), data);
+            }
+        });
+        System.out.println("test rdd count: " + testRdd.collect());
+
         //create table as select
         spark.sql("CREATE TABLE " + tableNameCopy + " AS SELECT name, num FROM " + tableName);
         spark.sql("SELECT * FROM " + tableNameCopy).show();
@@ -121,5 +136,36 @@ public class JavaSparkSQL {
         Odps odps = CupidSession.get().odps();
         System.out.println(odps.tables().get(ptTableName).getPartitions().size());
         System.out.println(odps.tables().get(ptTableName).getPartitions().get(0).getPartitionSpec());
+    }
+
+    public static class TestData implements Serializable {
+        private String name;
+        private long num;
+
+        public TestData() {
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public long getNum() {
+            return this.num;
+        }
+
+        public void setNum(long num) {
+            this.num = num;
+        }
+
+        @Override
+        public String toString() {
+            return "TestData {" +
+                    "name='" + name + '\'' +
+                    ", num=" + num + "}";
+        }
     }
 }
