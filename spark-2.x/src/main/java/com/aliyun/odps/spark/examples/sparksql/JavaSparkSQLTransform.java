@@ -60,30 +60,6 @@ public class JavaSparkSQLTransform {
         spark.sql("DROP TABLE IF EXISTS " + tableName);
         spark.sql("CREATE TABLE IF NOT EXISTS " + tableName +
                 "(`col0` int, `col1` bigint, `col2` string, `col3` decimal(6,3), `col4` tinyint, `col5` smallint, `col6` double, `col7` float, `col8` boolean, `col9` date, `col10` datetime, `col11` timestamp, `col12` char(2), `col13` varchar(4), `col14` binary, `col15` array<int>, `col16` map<bigint,string>, `col17` struct<name:string,age:int,parents:map<string,string>,salary:float,hobbies:array<string>>)");
-//
-//        Map<Long, String> m1 = new java.util.HashMap<>();
-//        Map<Long, String> m1h = new java.util.HashMap<>();
-//        m1.put(1L, "one");
-//        m1.put(0L, "zero");
-//        m1h.put(1L, "one");
-//        m1h.put(0L, "zero");
-//
-//        Map<Long, String> m2 = new java.util.HashMap<>();
-//        Map<Long, String>  m2h = new java.util.HashMap<>();
-//        m2.put(2L, "two");
-//        m2h.put(2L, "two");
-//
-//        Map<String, String> m3 = new java.util.HashMap<>();
-//        Map<String, String> m3h= new java.util.HashMap<>();
-//        m3.put("father", "Jack");
-//        m3.put("mather", "Rose");
-//        m3h.put("father", "Jack");
-//        m3h.put("mather", "Rose");
-//
-//        Map<String, String> m4 = new java.util.HashMap<>();
-//        Map<String, String> m4h = new java.util.HashMap<>();
-//        m4.put("mather", "Mary");
-//        m4h.put("mather", "Mary");
 
         scala.collection.mutable.HashMap<Long, String> m1 = new scala.collection.mutable.HashMap<>();
         m1.put(1L, "one");
