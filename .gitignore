@@ -19,3 +19,13 @@ metastore_db/
 derby.log
 log4j.properties
 dependency-reduced-pom.xml
+
+# Dependencies
+/docs/node_modules
+
+# Production
+/docs/build
+
+# Generated files
+.docusaurus
+.cache-loader

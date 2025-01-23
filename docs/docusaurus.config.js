@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'MaxCompute Java SDK',
+  title: 'MaxCompute Spark',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   url: 'https://aliyun.github.io',
@@ -17,7 +17,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'aliyun', // Usually your GitHub org/user name.
-  projectName: 'aliyun-odps-java-sdk', // Usually your repo name.
+  projectName: 'MaxCompute-Spark', // Usually your repo name.
   trailingSlash: 'true',
 
   onBrokenAnchors: 'ignore',
@@ -64,7 +64,7 @@ const config = {
       },
       image: 'img/logo.svg',
       navbar: {
-        title: 'MaxCompute Java SDK',
+        title: 'MaxCompute Spark',
         logo: {
           alt: 'MaxCompute Logo',
           src: 'img/logo.svg',
@@ -76,22 +76,22 @@ const config = {
             position: 'left',
             label: '文档',
           },
-          {
-            href: 'https://github.com/aliyun/aliyun-odps-jdbc',
-            position: 'right',
-            label: '使用 JDBC 链接 MaxCompute',
-          },
+//          {
+//            href: 'https://github.com/aliyun/aliyun-odps-jdbc',
+//            position: 'right',
+//            label: '使用 JDBC 链接 MaxCompute',
+//          },
 //          {
 //            type: 'docsVersionDropdown',
 //            sidebarId: 'version',
 //            position: 'left',
 //            dropdownActiveClassDisabled: true,
 //          },
-          {
-            href: 'https://github.com/aliyun/aliyun-odps-java-sdk',
-            label: 'GitHub',
-            position: 'right',
-          },
+//          {
+//            href: 'https://github.com/aliyun/aliyun-odps-java-sdk',
+//            label: 'GitHub',
+//            position: 'right',
+//          },
         ],
       },
       prism: {
