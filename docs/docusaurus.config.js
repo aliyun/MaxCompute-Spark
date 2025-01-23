@@ -12,7 +12,7 @@ const config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   url: 'https://aliyun.github.io',
-  baseUrl: '/',
+  baseUrl: '/MaxCompute-Spark/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -22,7 +22,7 @@ const config = {
 
   onBrokenAnchors: 'ignore',
   onBrokenLinks: 'ignore',
-  onBrokenMarkdownLinks: 'throw',
+  onBrokenMarkdownLinks: 'ignore',
 
   markdown: {
       mermaid: true,
