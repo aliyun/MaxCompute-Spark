@@ -24,9 +24,11 @@ object SparkUnstructuredDataCompute {
   def main(args: Array[String]) {
     val spark = SparkSession
       .builder()
-      .config("spark.hadoop.fs.oss.credentials.provider", "org.apache.hadoop.fs.aliyun.oss.AliyunStsTokenCredentialsProvider")
-      .config("spark.hadoop.fs.oss.ststoken.roleArn", "acs:ram::****:role/aliyunodpsdefaultrole")
-      .config("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-zmf.aliyuncs.com")
+      .config("spark.hadoop.fs.AbstractFileSystem.oss.impl", "com.aliyun.emr.fs.oss.OSS")
+      .config("spark.hadoop.fs.oss.impl", "com.aliyun.emr.fs.oss.JindoOssFileSystem")
+      .config("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-internal.aliyuncs.com")
+      .config("spark.hadoop.fs.oss.accessKeyId", "xxx")
+      .config("spark.hadoop.fs.oss.accessKeySecret", "xxx")
       .appName("SparkUnstructuredDataCompute")
       .getOrCreate()
 

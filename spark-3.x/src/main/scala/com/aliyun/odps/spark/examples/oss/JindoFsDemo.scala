@@ -22,29 +22,17 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object JindoFsDemo {
   def main(args: Array[String]): Unit = {
-    val aliyunUid : String = args(0)
-    val role : String = args(1)
-    val bucket : String = args(2)
-    val ossPath : String = args(3)
+    val bucket : String = args(0)
+    val ossPath : String = args(1)
 
-    // using ram-role assume
+    //using access-key-id/access-key-secret
     val conf = new SparkConf()
       .setAppName("jindo-fs-demo")
       .set("spark.hadoop.fs.AbstractFileSystem.oss.impl", "com.aliyun.emr.fs.oss.OSS")
       .set("spark.hadoop.fs.oss.impl", "com.aliyun.emr.fs.oss.JindoOssFileSystem")
       .set("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-internal.aliyuncs.com")
-      .set("spark.hadoop.fs.jfs.cache.oss.credentials.provider", "com.aliyun.emr.fs.auth.CustomCredentialsProvider")
-      .set("spark.hadoop.aliyun.oss.provider.url", s"http://localhost:10011/sts-token-info?user_id=${aliyunUid}&role=${role}")
-
-
-    //using access-key-id/access-key-secret
-//    val conf = new SparkConf()
-//      .setAppName("jindo-fs-demo")
-//      .set("spark.hadoop.fs.AbstractFileSystem.oss.impl", "com.aliyun.emr.fs.oss.OSS")
-//      .set("spark.hadoop.fs.oss.impl", "com.aliyun.emr.fs.oss.JindoOssFileSystem")
-//      .set("spark.hadoop.fs.oss.endpoint", "oss-cn-hangzhou-internal.aliyuncs.com")
-//      .set("spark.hadoop.fs.oss.accessKeyId", "xxx")
-//      .set("spark.hadoop.fs.oss.accessKeySecret", "xxx")
+      .set("spark.hadoop.fs.oss.accessKeyId", "xxx")
+      .set("spark.hadoop.fs.oss.accessKeySecret", "xxx")
 
     val sc = new SparkContext(conf)
 

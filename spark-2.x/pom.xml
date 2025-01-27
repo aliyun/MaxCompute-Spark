@@ -77,12 +77,6 @@
 
         <dependency>
             <groupId>com.aliyun.odps</groupId>
-            <artifactId>hadoop-fs-oss</artifactId>
-            <version>${cupid.sdk.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.aliyun.odps</groupId>
             <artifactId>odps-spark-datasource_${scala.binary.version}</artifactId>
             <version>${cupid.sdk.version}</version>
         </dependency>

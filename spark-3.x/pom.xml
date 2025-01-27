@@ -62,12 +62,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.aliyun.odps</groupId>
-            <artifactId>hadoop-fs-oss</artifactId>
-            <version>${cupid.sdk.version}</version>
-        </dependency>
-
     </dependencies>
 
     <build>
